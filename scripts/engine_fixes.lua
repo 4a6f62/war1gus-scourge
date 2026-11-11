@@ -58,6 +58,42 @@ if not EngineFixesInstalled then
       end
    end
 
+   --  Loading a saved game swaps player colours (units and minimap).
+   --
+   --  Units are drawn with the global player colour table, which
+   --  SetColorScheme() builds from currentRace. When a save is loaded, that
+   --  table is built before the save restores currentRace (and campaign saves
+   --  skip SetColorScheme entirely because war1gus.InCampaign is set), so it
+   --  keeps whatever scheme was active before, typically the human one.
+   --  Rebuild it from this player's race once the save is fully loaded.
+   --  (A local, not a global: globals are written into save files.)
+   local loadingSavedGame = false
+   local StartSavedGameOriginal = StartSavedGame
+   if type(StartSavedGameOriginal) == "function" then
+      StartSavedGame = function(...)
+         loadingSavedGame = true
+         return StartSavedGameOriginal(...)
+      end
+   end
+
+   local GameStartingOriginal = GameStarting
+   GameStarting = function(...)
+      if loadingSavedGame then
+         loadingSavedGame = false
+         pcall(function()
+            local race = GetPlayerData(GetThisPlayer(), "RaceName")
+            if race == "human" or race == "orc" or race == "forsaken" then
+               currentRace = race
+            end
+            SetColorScheme()
+            NewColors()
+         end)
+      end
+      if type(GameStartingOriginal) == "function" then
+         return GameStartingOriginal(...)
+      end
+   end
+
    for _, name in ipairs({"StopGame", "ActionVictory", "ActionDefeat", "ActionDraw", "Exit"}) do
       local original = _G[name]
       if type(original) == "function" then
