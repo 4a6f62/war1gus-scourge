@@ -489,6 +489,9 @@ else
    )
 end
 
+-- Engine workarounds; must come before any unit type is defined.
+Load("scripts/engine_fixes.lua")
+
 --- Uses Stratagus Library path!
 Load("scripts/wc1.lua")
 Load("scripts/wc1-config.lua")
@@ -516,7 +519,5 @@ Load("scripts/commands.lua")
 if preferences.RebalancedStats then
    Load("scripts/balancing.lua")
 end
-
-Load("scripts/engine_fixes.lua")
 
 print("... ready!\n")
