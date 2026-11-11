@@ -36,14 +36,23 @@ This is just a mind fart, to see if I could do it. I love Warcraft I, and as a k
    - `War1gus-3.3.2.exe`: a normal installer.
    - `War1gus-portable-3.3.2.exe`: unpacks everything into a single folder you choose, for example `C:\Games\War1gus`. This is the easiest to mod.
 2. **Start War1gus once.** It asks where your Warcraft I data is. Point it to the folder with `DATA.WAR`, or to the GOG installer. Let it finish extracting, then close the game.
-3. **Find the War1gus data folder.** This is the folder that now contains `graphics`, `scripts`, `campaigns` and so on:
-   - **Portable version:** the folder you unpacked War1gus into, for example `C:\Games\War1gus`.
-   - **Normal installer:** `Documents\Stratagus\data.War1gus`.
-4. **Download this mod.** On this GitHub page, click **Code → Download ZIP** and unzip it.
-5. **Copy the mod into the data folder.** Copy everything inside the unzipped `war1gus-scourge-main` folder (`campaigns`, `contrib`, `graphics`, `maps`, `scripts`, `sounds`, …) into the data folder from step 3. When Windows asks, choose **Replace the files in the destination**.
-6. **Play.** Start War1gus as usual. Choose **Scourge campaign** in the campaign menu, or pick the **Scourge** race in a skirmish game.
+3. **Find the War1gus data folder.** This is where War1gus keeps the game files. Open it in File Explorer (press **Windows key + E**):
+   - **Portable version:** go to the folder you unpacked War1gus into, for example `C:\Games\War1gus`.
+   - **Normal installer:** click **Documents** in the left panel, then open **Stratagus**, then **data.War1gus**.
 
-If War1gus ever extracts the data again (for example after updating War1gus), its original scripts overwrite the mod's changed scripts. In that case, repeat step 5.
+   You are in the right place when you see folders named `graphics`, `scripts`, `campaigns` and `sounds`. Leave this window open.
+4. **Download the mod.** At the top of this GitHub page, click the green **Code** button, then **Download ZIP**. The file `war1gus-scourge-main.zip` ends up in your **Downloads** folder.
+5. **Unzip it.** In your Downloads folder, right-click `war1gus-scourge-main.zip` and choose **Extract All…**, then click **Extract**. A new window opens with a folder called `war1gus-scourge-main`.
+6. **Open the mod folder until you see the mod's own folders.** Double-click `war1gus-scourge-main`. If you see *another* folder with the same name inside, double-click that one too. You are in the right place when you see folders named `campaigns`, `contrib`, `graphics`, `maps`, `scripts` and `sounds`.
+7. **Copy the mod's files.** In that window, press **Ctrl + A** to select everything, then **Ctrl + C** to copy it.
+8. **Paste them into the War1gus data folder.** Click on the window from step 3 (the one with War1gus's `graphics`, `scripts`, … folders). Click on an empty spot in it, then press **Ctrl + V**.
+   - Windows says that files with the same names already exist. Click **Replace the files in the destination**. This is supposed to happen: the mod changes some of War1gus's own files.
+   - If Windows asks for administrator permission, click **Continue**.
+
+   Do **not** drop the whole `war1gus-scourge-main` folder in as one folder: the game would not find it. Only what's *inside* it goes in, so that the mod's `scripts` lands on War1gus's `scripts`, `graphics` on `graphics`, and so on.
+9. **Play.** Start War1gus as usual. Choose **Scourge campaign** in the campaign menu, or pick the **Scourge** race in a skirmish game. If you don't see the Scourge anywhere, the files most likely ended up one folder too deep. Go back to step 6.
+
+If War1gus ever extracts the data again (for example after updating War1gus), its original scripts overwrite the mod's changed scripts. In that case, repeat steps 7 and 8.
 
 ## Installation on Linux
 
