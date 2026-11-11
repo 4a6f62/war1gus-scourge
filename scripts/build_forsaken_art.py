@@ -24,7 +24,7 @@ in Warcraft I's 8-bit paletted pixel-art style:
 import os
 from PIL import Image
 
-BASE_DIR = "/home/smiles/forsaken-mod"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GRAPHICS_DIR = os.path.join(BASE_DIR, "graphics")
 CONTRIB_DIR = os.path.join(BASE_DIR, "contrib", "graphics")
 

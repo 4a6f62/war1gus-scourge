@@ -198,13 +198,22 @@ def draw_frame(cv, col, anim, step):
 
     bob = 0
     stride = 0
+    sway = 0
+    lift_leg = None
     if anim == "move":
-        stride = (-2, 0, 2, 0)[step]
-        bob = (0, -1, 0, -1)[step]
+        # Heavy waddle: feet trade places, the passing foot is lifted on
+        # frames 1 and 3, the body rises over it and rocks toward the
+        # planted side.
+        stride = (4, 0, -4, 0)[step]
+        bob = (1, -1, 1, -1)[step]
+        sway = (0, 1, 0, -1)[step]
+        lift_leg = (None, 0, None, 1)[step]
     elif anim == "attack":
         bob = (0, -1, 0, 1, 0)[step]
 
-    cx, cy = 24 + fx * 1, 25 + bob
+    ground_cx, ground_cy = 24 + fx * 1, 25
+    cx = ground_cx + sway * (1 if col in (0, 4) else 0.75)  # whole pixels: halves leave gaps
+    cy = ground_cy + bob
     rx, ry = 12, 11
 
     # side axis in screen space (the unit's left/right)
@@ -221,14 +230,19 @@ def draw_frame(cv, col, anim, step):
         return cx + side[0] * 10, cy - 5 + side[1] * 4
 
     # dark ground shadow (WC1 units have no outline, just a shadow blob)
-    cv.ellipse(cx + 2, cy + 16, 11, 3, SHADOW, SHADOW, SHADOW)
+    # (while walking the shadow stays put under the bobbing body)
+    shadow_y = (ground_cy if anim == "move" else cy) + 16
+    cv.ellipse(ground_cx + 2, shadow_y, 11, 3, SHADOW, SHADOW, SHADOW)
 
     # legs
     for k, side in enumerate((far, near)):
         lx = cx + side[0] * 5 - fx * 1
         ly = cy + 8 + side[1] * 2
         off = stride if k else -stride
-        foot = (lx + fx * off, ly + 7 + fy * off * 0.5)
+        lift = 3 if k == lift_leg else 0
+        # planted feet stay on the ground while the body bobs
+        plant = bob if anim == "move" else 0
+        foot = (lx + fx * off, ly + 7 + fy * off * 0.8 - lift - plant)
         cv.line(lx, ly, foot[0], foot[1], FLESH_DK, 5, FLESH_SH)
         cv.line(foot[0] - 2, foot[1] + 1, foot[0] + 2 + fx, foot[1] + 1, FLESH_SH, 2)
 
@@ -361,7 +375,10 @@ def shrink_and_map_team(rgba):
 
 
 def main():
-    pal = Image.open(os.path.join(GRAPHICS_DIR, "orc", "units", "grunt.png")).getpalette()
+    pal_src = os.path.join(GRAPHICS_DIR, "orc", "units", "grunt.png")
+    if not os.path.exists(pal_src):  # no extracted War1gus data: reuse our own sheet's palette
+        pal_src = os.path.join(GRAPHICS_DIR, "forsaken", "units", "abomination.png")
+    pal = Image.open(pal_src).getpalette()
     dst = os.path.join(GRAPHICS_DIR, "forsaken", "units", "abomination.png")
     rgba = Image.new("RGBA", (5 * FW, 15 * FH), (0, 0, 0, 0))
     px = rgba.load()

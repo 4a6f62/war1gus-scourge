@@ -54,13 +54,21 @@ def draw_frame(cv, col, anim, step):
         draw_death(cv, col, step)
         return
 
-    cx, cy = 24, 26
+    ground_cy = 26
     rear = 0      # how far the front end lifts (attack)
     stride = 0
+    lift_group = None
+    bob = 0
     if anim == "move":
-        stride = (-2, 0, 2, 0)[step]
+        # Alternating gait: the two leg groups trade places, and the group
+        # that swings forward is lifted on the passing frames (1 and 3).
+        stride = (4, 0, -4, 0)[step]
+        lift_group = (None, 0, None, 1)[step]
+        bob = (0, -1, 0, -1)[step]
     elif anim == "attack":
         rear = (2, 5, 4, 1)[step]
+
+    cx, cy = 24, ground_cy + bob
 
     # body axis (screen space; north/south views are foreshortened)
     ax, ay = fx, fy * 0.75
@@ -70,20 +78,25 @@ def draw_frame(cv, col, anim, step):
     thorax = (cx + ax * 1, cy + ay * 1 - rear * 0.5)
     head = (cx + ax * 6, cy + ay * 6 - 3 - rear)
 
-    cv.ellipse(cx, cy + 6, 13, 4, [SHADOW])
+    cv.ellipse(cx, ground_cy + 6, 13, 4, [SHADOW])
 
     # legs: 4 per side, attached along the thorax
     legs = []
     for s in (-1, 1):
         for i, along in enumerate((2.5, 0.8, -0.8, -2.5)):
-            phase = stride if (i + (s > 0)) % 2 else -stride
+            group = (i + (s > 0)) % 2
+            phase = stride if group else -stride
+            lift = 3 if group == lift_group else 0
             bx = thorax[0] + ax * along + side[0] * s * 2
             by = thorax[1] + ay * along + side[1] * s * 1.5
             spread = 1.0 + 0.35 * abs(along)
             kx = bx + side[0] * s * 6.5 * spread + ax * along * 1.5 + ax * phase * 0.5
-            ky = by + side[1] * s * 5 * spread + ay * along * 1.5 - 5
+            ky = (by + side[1] * s * 5 * spread + ay * along * 1.5 - 5
+                  + ay * phase * 0.5 - lift * 0.6)
             tx = bx + side[0] * s * 9.5 * spread + ax * along * 3 + ax * phase
-            ty = by + side[1] * s * 8 * spread + ay * along * 3 + 3
+            # planted feet stay on the ground while the body bobs
+            ty = (by + side[1] * s * 8 * spread + ay * along * 3 + 3
+                  + ay * phase - lift - bob)
             if anim == "attack" and i == 0:  # front legs lift up when rearing
                 ky -= rear * 1.5
                 ty -= rear * 2.5
@@ -185,7 +198,10 @@ def shrink_and_map_team(frame_img):
 
 
 def main():
-    pal = Image.open(os.path.join(GRAPHICS_DIR, "orc", "units", "grunt.png")).getpalette()
+    pal_src = os.path.join(GRAPHICS_DIR, "orc", "units", "grunt.png")
+    if not os.path.exists(pal_src):  # no extracted War1gus data: reuse our own sheet's palette
+        pal_src = os.path.join(GRAPHICS_DIR, "forsaken", "units", "crypt_fiend.png")
+    pal = Image.open(pal_src).getpalette()
     dst = sys.argv[1] if len(sys.argv) > 1 else os.path.join(GRAPHICS_DIR, "forsaken", "units", "crypt_fiend.png")
     sheet = Image.new("RGBA", (5 * FRAME, 14 * FRAME), (0, 0, 0, 0))
     move = {3: 0, 6: 1, 9: 2, 12: 3}
