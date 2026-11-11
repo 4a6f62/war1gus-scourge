@@ -57,8 +57,11 @@ def draw_frame(cv, col, anim, step):
     cx, cy = 24, 26
     rear = 0      # how far the front end lifts (attack)
     stride = 0
+    bob = 0
     if anim == "move":
-        stride = (-2, 0, 2, 0)[step]
+        # alternating tetrapod gait: one set of four legs swings while lifted
+        stride = (-5, 0, 5, 0)[step]
+        bob = (0, -1, 0, -1)[step]
     elif anim == "attack":
         rear = (2, 5, 4, 1)[step]
 
@@ -66,24 +69,30 @@ def draw_frame(cv, col, anim, step):
     ax, ay = fx, fy * 0.75
     side = (-fy, fx) if col not in (0, 4) else (1, 0)
 
+    cy += bob
     abdomen = (cx - ax * 6, cy - ay * 6)
     thorax = (cx + ax * 1, cy + ay * 1 - rear * 0.5)
     head = (cx + ax * 6, cy + ay * 6 - 3 - rear)
 
-    cv.ellipse(cx, cy + 6, 13, 4, [SHADOW])
+    cv.ellipse(cx, cy + 6 - bob, 13, 4, [SHADOW])
 
     # legs: 4 per side, attached along the thorax
     legs = []
     for s in (-1, 1):
         for i, along in enumerate((2.5, 0.8, -0.8, -2.5)):
-            phase = stride if (i + (s > 0)) % 2 else -stride
+            group = (i + (s > 0)) % 2
+            phase = stride if group else -stride
+            lifted = anim == "move" and ((step == 1 and group) or (step == 3 and not group))
             bx = thorax[0] + ax * along + side[0] * s * 2
             by = thorax[1] + ay * along + side[1] * s * 1.5
             spread = 1.0 + 0.35 * abs(along)
             kx = bx + side[0] * s * 6.5 * spread + ax * along * 1.5 + ax * phase * 0.5
             ky = by + side[1] * s * 5 * spread + ay * along * 1.5 - 5
             tx = bx + side[0] * s * 9.5 * spread + ax * along * 3 + ax * phase
-            ty = by + side[1] * s * 8 * spread + ay * along * 3 + 3
+            ty = by + side[1] * s * 8 * spread + ay * along * 3 + 3 + ay * phase * 0.8
+            if lifted:  # swinging legs come off the ground, knee high
+                ky -= 3
+                ty -= 3.5
             if anim == "attack" and i == 0:  # front legs lift up when rearing
                 ky -= rear * 1.5
                 ty -= rear * 2.5

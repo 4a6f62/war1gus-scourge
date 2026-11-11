@@ -198,13 +198,19 @@ def draw_frame(cv, col, anim, step):
 
     bob = 0
     stride = 0
+    sway = 0
+    lift = (0, 0)  # (far leg, near leg) foot lift
     if anim == "move":
-        stride = (-2, 0, 2, 0)[step]
-        bob = (0, -1, 0, -1)[step]
+        # heavy waddle: contact - passing - contact - passing
+        stride = (-5, 0, 5, 0)[step]
+        bob = (1, -1, 1, -1)[step]
+        sway = (-2, 0, 2, 0)[step]
+        lift = ((0, 0), (0, 4), (0, 0), (4, 0))[step]
     elif anim == "attack":
         bob = (0, -1, 0, 1, 0)[step]
 
-    cx, cy = 24 + fx * 1, 25 + bob
+    # sideways sway shows best when facing towards/away from the camera
+    cx, cy = 24 + fx * 1 + round(sway * (1 - abs(fx) * 0.6)), 25 + bob
     rx, ry = 12, 11
 
     # side axis in screen space (the unit's left/right)
@@ -228,7 +234,8 @@ def draw_frame(cv, col, anim, step):
         lx = cx + side[0] * 5 - fx * 1
         ly = cy + 8 + side[1] * 2
         off = stride if k else -stride
-        foot = (lx + fx * off, ly + 7 + fy * off * 0.5)
+        # side views step along the facing; front/back views step up/down
+        foot = (lx + fx * off, ly + 7 + fy * off * 0.6 - lift[k])
         cv.line(lx, ly, foot[0], foot[1], FLESH_DK, 5, FLESH_SH)
         cv.line(foot[0] - 2, foot[1] + 1, foot[0] + 2 + fx, foot[1] + 1, FLESH_SH, 2)
 
