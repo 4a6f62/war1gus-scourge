@@ -1,0 +1,57 @@
+--- a/src/unit/unit.cpp
++++ b/src/unit/unit.cpp
+@@ -2454,8 +2454,35 @@
+ **
+ **  @param unit    Unit to be destroyed.
+ */
++/**
++**  Delete the orders a unit keeps outside its order queue.
++**
++**  SavedOrder/NewOrder/CriticalOrder hold references (a harvest order even
++**  references its own worker). Left on a dead unit they keep it referenced
++**  forever, and freeing them after the unit itself is freed is a double free.
++*/
++static void ClearPendingOrders(CUnit &unit)
++{
++	if (unit.SavedOrder != NULL) {
++		COrder *order = unit.SavedOrder;
++		unit.SavedOrder = NULL;
++		delete order;
++	}
++	if (unit.NewOrder != NULL) {
++		COrder *order = unit.NewOrder;
++		unit.NewOrder = NULL;
++		delete order;
++	}
++	if (unit.CriticalOrder != NULL) {
++		COrder *order = unit.CriticalOrder;
++		unit.CriticalOrder = NULL;
++		delete order;
++	}
++}
++
+ void LetUnitDie(CUnit &unit, bool suicide)
+ {
++	ClearPendingOrders(unit);
+ 	unit.Variable[HP_INDEX].Value = std::min<int>(0, unit.Variable[HP_INDEX].Value);
+ 	unit.Moving = 0;
+ 	unit.TTL = 0;
+@@ -3496,10 +3523,17 @@
+ 	//  Free memory for all units in unit table.
+ 	std::vector<CUnit *> units(UnitManager->begin(), UnitManager->end());
+ 
++	// Drop all references held by out-of-queue orders before freeing anything.
++	for (std::vector<CUnit *>::iterator it = units.begin(); it != units.end(); ++it) {
++		if (*it != NULL && !(*it)->ReleaseCycle) {
++			ClearPendingOrders(**it);
++		}
++	}
++
+ 	for (std::vector<CUnit *>::iterator it = units.begin(); it != units.end(); ++it) {
+ 		CUnit *unit = *it;
+ 
+-		if (unit == NULL) {
++		if (unit == NULL || unit->ReleaseCycle) {
+ 			continue;
+ 		}
+ 		if (!unit->Destroyed) {

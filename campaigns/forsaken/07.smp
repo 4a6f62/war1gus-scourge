@@ -1,0 +1,4 @@
+StratagusMap()
+DefinePlayerTypes("person", "computer", "nobody", "nobody", "nobody", "nobody", "nobody", "nobody", "nobody", "nobody", "nobody", "nobody", "nobody", "nobody", "neutral")
+PresentMap("Scourge 07", 16, 64, 64, 7)
+DefineMapSetup("campaigns/forsaken/07_c.sms")

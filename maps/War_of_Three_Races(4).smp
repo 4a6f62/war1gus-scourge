@@ -1,0 +1,3 @@
+-- Stratagus Map Presentation
+DefinePlayerTypes("person", "person", "person", "person")
+PresentMap("War of Three Races (Scourge, Human, Orc)", 4, 64, 64, 1)

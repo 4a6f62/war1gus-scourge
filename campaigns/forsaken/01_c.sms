@@ -1,0 +1,15 @@
+Load("campaigns/forsaken/01_c2.sms")
+LoadTileModels("scripts/tilesets/forest_campaign.lua")
+
+Load("campaigns/forsaken/01.sms")
+
+
+AddTrigger(
+  function() return (GetPlayerData(GetThisPlayer(), "UnitTypesCount", "unit-forsaken-farm") >= 4 and
+                     GetPlayerData(GetThisPlayer(), "UnitTypesCount", "unit-forsaken-barracks") >= 1) end,
+  function() return ActionVictory() end)
+AddTrigger(
+  function() return (GetPlayerData(GetThisPlayer(), "TotalNumUnits") == 0) end,
+  function() return ActionDefeat() end)
+
+SetStartView(0, 36, 19)

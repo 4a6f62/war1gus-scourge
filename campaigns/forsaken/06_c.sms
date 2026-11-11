@@ -1,0 +1,14 @@
+Load("campaigns/forsaken/06_c2.sms")
+LoadTileModels("scripts/tilesets/forest_campaign.lua")
+
+Load("campaigns/forsaken/06.sms")
+
+
+AddTrigger(
+  function() return (GetNumOpponents(GetThisPlayer()) == 0) end,
+  function() return ActionVictory() end)
+AddTrigger(
+  function() return (GetPlayerData(GetThisPlayer(), "TotalNumUnits") == 0) end,
+  function() return ActionDefeat() end)
+
+SetStartView(0, 26, 60)

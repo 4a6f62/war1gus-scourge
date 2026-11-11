@@ -1,0 +1,71 @@
+objectives = {"purge the catacombs of all enemies"}
+
+-- Base Human/Orc allowances for AI opponents
+
+-- Allowed units
+DefineAllowHumanUnits("FFFFFFFFFFFFFFFF")
+DefineAllowOrcUnits("FFFFFFFFFFFFFFFF")
+
+
+-- Researched upgrades and spells
+DefineAllow("upgrade-spear1", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-spear2", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-arrow1", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-arrow2", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-axe1", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-axe2", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-sword1", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-sword2", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-wolves1", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-wolves2", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-horse1", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-horse2", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-orc-shield1", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-orc-shield2", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-human-shield1", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-human-shield2", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-spider", "FAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-scorpion", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-poison-cloud", "FAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-rain-of-fire", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-daemon", "FAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-water-elemental", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-raise-dead", "RRRRAAAAAAAAAAAA")
+DefineAllow("upgrade-healing", "RRRRAAAAAAAAAAAA")
+DefineAllow("upgrade-dark-vision", "ARRRAAAAAAAAAAAA")
+DefineAllow("upgrade-far-seeing", "ARRRAAAAAAAAAAAA")
+DefineAllow("upgrade-unholy-armor", "FAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-invisibility", "AAAAAAAAAAAAAAAA")
+
+
+-- Scourge allowances for Player 0
+DefineAllowForsakenUnits("FFFFFFFFFFFFFFFF")
+DefineAllow("unit-acolyte", "AAAAAAAAAAAAAAAA")
+DefineAllow("unit-ghoul", "AAAAAAAAAAAAAAAA")
+DefineAllow("unit-forsaken-farm", "AAAAAAAAAAAAAAAA")
+DefineAllow("unit-forsaken-barracks", "AAAAAAAAAAAAAAAA")
+DefineAllow("unit-forsaken-town-hall", "AAAAAAAAAAAAAAAA")
+DefineAllow("unit-crypt-fiend", "AAAAAAAAAAAAAAAA")
+DefineAllow("unit-dark-ranger", "AAAAAAAAAAAAAAAA")
+DefineAllow("unit-forsaken-lumber-mill", "AAAAAAAAAAAAAAAA")
+DefineAllow("unit-abomination", "AAAAAAAAAAAAAAAA")
+DefineAllow("unit-death-knight", "AAAAAAAAAAAAAAAA")
+DefineAllow("unit-forsaken-blacksmith", "AAAAAAAAAAAAAAAA")
+DefineAllow("unit-forsaken-stable", "AAAAAAAAAAAAAAAA")
+DefineAllow("unit-necromancer", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-claws1", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-claws2", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-carapace1", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-carapace2", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-dark-arrow1", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-dark-arrow2", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-skeletal-steed1", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-skeletal-steed2", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-forsaken-raise-dead", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-forsaken-dark-vision", "AAAAAAAAAAAAAAAA")
+DefineAllow("upgrade-forsaken-unholy-armor", "FFFFFFFFFFFFFFFF")
+DefineAllow("upgrade-forsaken-spiders", "FFFFFFFFFFFFFFFF")
+DefineAllow("upgrade-forsaken-poison-cloud", "FFFFFFFFFFFFFFFF")
+DefineAllow("upgrade-forsaken-daemon", "FFFFFFFFFFFFFFFF")
+currentRace = "forsaken"
+currentState = 4

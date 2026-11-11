@@ -1,0 +1,3 @@
+-- Stratagus Map Presentation
+DefinePlayerTypes("person", "person", "person", "person")
+PresentMap("Plague of Lordaeron (4P Bases)", 4, 64, 64, 1)
