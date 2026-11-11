@@ -23,10 +23,11 @@ from build_forsaken_art import GRAPHICS_DIR, rgba_to_indexed  # noqa: E402
 
 FW = FH = 48
 
-FLESH_HI = (226, 204, 186, 255)
-FLESH = (192, 160, 146, 255)
-FLESH_DK = (140, 108, 100, 255)
-FLESH_SH = (88, 64, 66, 255)
+# Muted, sickly undead flesh (darker than v1, closer to the WC1 palette).
+FLESH_HI = (168, 162, 140, 255)
+FLESH = (126, 120, 102, 255)
+FLESH_DK = (86, 80, 70, 255)
+FLESH_SH = (50, 46, 42, 255)
 STITCH = (44, 30, 34, 255)
 GORE = (172, 26, 30, 255)
 GORE_DK = (96, 14, 20, 255)
@@ -37,7 +38,11 @@ STEEL_DK = (86, 88, 100, 255)
 WOOD = (96, 64, 40, 255)
 EYE = (120, 255, 80, 255)
 OUTLINE = (24, 16, 20, 255)
-PC = [(254, 0, 200 + i, 255) for i in range(8)]  # team ramp, light -> dark
+# Team colour is drawn as a pure blue ramp and mapped to palette indices
+# 200..207 after the frame has been shrunk (see shrink_and_map_team).
+PC = [(40, 40, 255 - i * 26, 255) for i in range(8)]  # light -> dark
+SHADOW = (0, 0, 0, 255)
+SHRINK = 37  # frames are drawn at 48px and shrunk to this size
 
 FACING = [(0, -1), (0.72, -0.72), (1, 0), (0.72, 0.72), (0, 1)]
 
@@ -140,6 +145,11 @@ def body_details(cv, col, cx, cy, rx, ry):
         y = cy + ry * 0.55 + t * t * 1.5
         cv.put(cx + dx, y, PC[2] if dx < 0 else PC[4])
         cv.put(cx + dx, y + 1, PC[5] if dx < 0 else PC[7])
+    # ragged team-coloured loincloth hanging from the belt
+    for dx in range(-5, 6):
+        for dy in range(2, 6 - abs(dx) // 3):
+            if (dx + dy) % 3:
+                cv.put(cx + dx, cy + ry * 0.55 + dy, PC[3 + (dy + dx) % 4])
     # harness strap over one shoulder
     for i in range(-int(ry * 0.9), int(ry * 0.5)):
         x = cx - i * 0.75 * (1 if front else -1)
@@ -209,6 +219,9 @@ def draw_frame(cv, col, anim, step):
 
     def shoulder(side):
         return cx + side[0] * 10, cy - 5 + side[1] * 4
+
+    # dark ground shadow (WC1 units have no outline, just a shadow blob)
+    cv.ellipse(cx + 2, cy + 16, 11, 3, SHADOW, SHADOW, SHADOW)
 
     # legs
     for k, side in enumerate((far, near)):
@@ -322,6 +335,31 @@ def outline(rgba):
                     break
 
 
+def shrink_and_map_team(rgba):
+    """Shrink every frame with resampling (gives the gritty, mixed-pixel look
+    of the WC1 sprites), then snap blue pixels back onto the team ramp."""
+    out = Image.new("RGBA", rgba.size, (0, 0, 0, 0))
+    off_x = (FW - SHRINK) // 2
+    off_y = FH - SHRINK - 3
+    for fy in range(0, rgba.height, FH):
+        for fx in range(0, rgba.width, FW):
+            fr = rgba.crop((fx, fy, fx + FW, fy + FH)).resize((SHRINK, SHRINK), Image.LANCZOS)
+            px = fr.load()
+            for y in range(SHRINK):
+                for x in range(SHRINK):
+                    r, g, b, a = px[x, y]
+                    if a < 140:
+                        px[x, y] = (0, 0, 0, 0)
+                        continue
+                    if b > r + 60 and b > g + 60:
+                        k = max(0, min(7, int((255 - b) / 26)))
+                        px[x, y] = (254, 0, 200 + k, 255)
+                    else:
+                        px[x, y] = (r, g, b, 255)
+            out.paste(fr, (fx + off_x, fy + off_y))
+    return out
+
+
 def main():
     pal = Image.open(os.path.join(GRAPHICS_DIR, "orc", "units", "grunt.png")).getpalette()
     dst = os.path.join(GRAPHICS_DIR, "forsaken", "units", "abomination.png")
@@ -340,7 +378,7 @@ def main():
             anim, step = "death", (r - 2) // 3
         for c in range(5):
             draw_frame(Canvas(px, c * FW, r * FH), c, anim, step)
-    outline(rgba)
+    rgba = shrink_and_map_team(rgba)
     out = rgba_to_indexed(rgba, pal)
     out.save(dst if len(sys.argv) < 2 else sys.argv[1])
     print("wrote", dst if len(sys.argv) < 2 else sys.argv[1])
