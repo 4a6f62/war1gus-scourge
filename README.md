@@ -35,7 +35,7 @@ This is just a mind fart, to see if I could do it. I love Warcraft I, and as a k
 1. **Install War1gus.** Download it from the [War1gus 3.3.2 release page](https://github.com/Wargus/war1gus/releases/tag/v3.3.2). There are two versions:
    - `War1gus-3.3.2.exe`: a normal installer.
    - `War1gus-portable-3.3.2.exe`: unpacks everything into a single folder you choose, for example `C:\Games\War1gus`. This is the easiest to mod.
-2. **Start War1gus once.** It asks where your Warcraft I data is. Point it to the folder with `DATA.WAR`, or to the GOG installer. Let it finish extracting, then close the game.
+2. **Start War1gus once, before you copy the mod.** This order matters: the first start copies War1gus's own files into the data folder, and would overwrite the mod if it were already there. It asks where your Warcraft I data is. Point it to the folder with `DATA.WAR`, or to the GOG installer. Let it finish extracting, then close the game.
 3. **Find the War1gus data folder.** This is where War1gus keeps the game files. Open it in File Explorer (press **Windows key + E**):
    - **Portable version:** go to the folder you unpacked War1gus into, for example `C:\Games\War1gus`.
    - **Normal installer:** click **Documents** in the left panel, then open **Stratagus**, then **data.War1gus**.
