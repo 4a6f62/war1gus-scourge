@@ -694,6 +694,12 @@ function BuildProgramStartMenu()
   local offx = (Video.Width - 320) / 2
   local offy = (Video.Height - 200) / 2
 
+  -- "vs Undead" under the "Orcs & Humans" subtitle of the title screen.
+  -- The background is stretched to the full screen, so position relative
+  -- to the screen size (in 320x200 title-screen pixels) rather than offy.
+  local subtitleY = 68
+  menu:addLabel("~<vs Undead~>", Video.Width / 2, Video.Height * subtitleY / 200, Fonts["large"])
+
   menu:addLabel(war1gus.Name .. " V" .. war1gus.Version .. "  " .. war1gus.Homepage, offx + 220, offy + 195 + 5*3, Fonts["small"])
   menu:addLabel("Stratagus V" .. GetStratagusVersion() .. "  " .. GetStratagusHomepage(), offx + 220, offy + 195 + 5*2, Fonts["small"])
   menu:addLabel(war1gus.Copyright, offx + 220, offy + 195 + 5*4, Fonts["small"])
