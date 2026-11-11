@@ -60,6 +60,7 @@ war1gus.InCampaign = false
 
 -- unit type conversions for solo and multiplayer games
 ShouldTogglePlayerRace = {}
+PlayerTargetRace = {}
 UnitEquivalents = UnitEquivalents or { }
 
 local dmg_formula = Add(AttackerVar("BasicDamage"),
@@ -88,7 +89,9 @@ function CreateUnit(unittype, player, pos)
     end
 
     if ShouldTogglePlayerRace[player] then
-        local targetRace = Players[player].RaceName
+        -- Players[i].RaceName is not exposed to Lua, so use the race that
+        -- SetPlayerData below recorded for this player.
+        local targetRace = PlayerTargetRace[player]
         if UnitEquivalents[targetRace] and UnitEquivalents[targetRace][unittype] then
             unittype = UnitEquivalents[targetRace][unittype]
         else
@@ -101,6 +104,7 @@ end
 OldStartMap = OldStartMap or StartMap
 function StartMap(map)
     ShouldTogglePlayerRace = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}
+    PlayerTargetRace = {}
     return OldStartMap(map)
 end
 
@@ -122,7 +126,8 @@ function SetPlayerData(player, data, arg1, arg2)
     DebugPrint("Preset race for player " .. player .. " is " .. GameSettings.Presets[player].Race)
     DebugPrint("    oldarg1: " .. oldarg1)
     DebugPrint("    newarg1: " .. arg1)
-    ShouldTogglePlayerRace[player] = (oldarg1 ~= arg1)  
+    ShouldTogglePlayerRace[player] = (oldarg1 ~= arg1)
+    PlayerTargetRace[player] = arg1
     if (GetThisPlayer() == player) then
         LoadUI(arg1, Video.Width, Video.Height)
     end
