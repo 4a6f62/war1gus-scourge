@@ -39,6 +39,7 @@ This is just a mind fart, to see if I could do it. I love Warcraft I, and as a k
 3. **Find the War1gus data folder.** This is where War1gus keeps the game files. Open it in File Explorer (press **Windows key + E**):
    - **Portable version:** go to the folder you unpacked War1gus into, for example `C:\Games\War1gus`.
    - **Normal installer:** click **Documents** in the left panel, then open **Stratagus**, then **data.War1gus**.
+     This is **not** the folder War1gus was installed to (`C:\Program Files\War1gus`). The installer puts the program there, but the game reads its files from the Documents folder, so mod files placed in Program Files are ignored.
 
    You are in the right place when you see folders named `graphics`, `scripts`, `campaigns` and `sounds`. Leave this window open.
 4. **Download the mod.** At the top of this GitHub page, click the green **Code** button, then **Download ZIP**. The file `war1gus-scourge-main.zip` ends up in your **Downloads** folder.
