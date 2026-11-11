@@ -353,7 +353,7 @@ def shrink_and_map_team(rgba):
                         continue
                     if b > r + 60 and b > g + 60:
                         k = max(0, min(7, int((255 - b) / 26)))
-                        px[x, y] = (254, 0, 200 + k, 255)
+                        px[x, y] = (254, 0, 207 - k, 255)  # 200 = darkest, 207 = brightest in game
                     else:
                         px[x, y] = (r, g, b, 255)
             out.paste(fr, (fx + off_x, fy + off_y))
