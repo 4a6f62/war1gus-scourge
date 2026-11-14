@@ -439,7 +439,8 @@ PossessedPending = {}
 local function StopAttacksOnPossessed()
 	for _, entry in ipairs(PossessedPending) do
 		local unit, owner = entry[1], entry[2]
-		if GetUnitVariable(unit, "Player") == owner then
+		local ok, unitOwner = pcall(GetUnitVariable, unit, "Player")
+		if ok and unitOwner == owner then
 			local x = GetUnitVariable(unit, "PosX")
 			local y = GetUnitVariable(unit, "PosY")
 			for p = 0, 14 do
